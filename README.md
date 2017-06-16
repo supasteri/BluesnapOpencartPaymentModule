@@ -8,8 +8,20 @@ In order to effectively install and use this plugin with your OpenCart web store
 3. Once you have set up and tested your installation against the BlueSnap sandbox environment, the final step will involve performing the production configuration. You will be required to gain access to the production BlueSnap account
 
 ## Bluesnap Configuration
-To transact with the BlueSnap payment gateway (sandbox or production), you will need to:
-1. Log into the BlueSnap sandbox (https://sandbox.bluesnap.com) or production account pages (https://cp.bluesnap.com/jsp/developer_login.jsp) ![Bluesnap Sandbox Login Screen](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Login.png "Bluesnap Sandbox Login Screen")
+To transact with the BlueSnap payment gateway (sandbox or production), you will need to log into the BlueSnap sandbox (https://sandbox.bluesnap.com) or production account pages (https://cp.bluesnap.com/jsp/developer_login.jsp) 
+
+![Bluesnap Sandbox Login Screen](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Login.png "Bluesnap Sandbox Login Screen")
+
+Once logged in, click on the "Settings -> API Settings" menu option:
+![Bluesnap API Settings](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Post%20Login%20-%20API%20Settings.png
+ "Bluesnap API Settings")
+
+
+You will now need to configure your API Credentials as well as your Authorised IPs, as follows: 
+
+![Bluesnap API Credentials and Authorized IPs](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Post%20Login%20-%20API%20Settings%20-%20Configuration.png
+ "Bluesnap API Credentials and Authorized IPs")
+
 1. Configure your API key. 
 2. Configure your whitelisted API. 
 
