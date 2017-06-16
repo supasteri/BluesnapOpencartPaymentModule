@@ -3,7 +3,7 @@ This project represents the official OpenCart-compatible project for the BlueSna
 
 # Before installing ...
 Before you can install and configure this payment module with your OpenCart web store, you will need to configure your BlueSnap merchant account as follows:
-1. Engage with a BlueSnap representative to obtain access to their sandbox environment. This will give you access to a dashboard where your API credentials may be configured. You can set up a Sandbox/Testing account at https://sandbox.bluesnap.com/jsp/new_developer_sandbox.jsp. Note that you will need a valid Merchant account for this process. 
+1. Engage with a BlueSnap representative to obtain access to their sandbox environment. This will give you access to a dashboard where your API credentials may be configured. You can set up a Sandbox/Testing account at https://sandbox.bluesnap.com/jsp/new_developer_sandbox.jsp. Be sure to select the "Merchant" option when setting up the new account. 
 2. Install and configure your plugin to initially perform test transactions against the sandbox environment using test credit card numbers provided by BlueSnap.  
 3. Once you have set up and tested your installation against the BlueSnap sandbox environment, the final step will involve performing the production configuration. You will be required to gain access to the production BlueSnap account
 
