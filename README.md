@@ -58,7 +58,8 @@ Note: Before you can configure the plugin, you will need to ensure that you sign
 # Links
 * BlueSnap website - https://www.bluesnap.com
 * Official plugin extension site - https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=30987 
-* Sandbox developer account - https://sandbox.bluesnap.com/
+* Sandbox developer account sign-up - https://sandbox.bluesnap.com/jsp/new_developer_sandbox.jsp
+* Bluesnap OpenCart partner website - https://home.bluesnap.com/partners/opencart/
 * Sandbox test credit card numbers - https://support.bluesnap.com/docs/test-credit-card-numbers
 
 # Background and Features
