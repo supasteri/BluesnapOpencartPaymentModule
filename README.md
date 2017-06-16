@@ -1,10 +1,15 @@
 # BluesnapOpencartPaymentModule
 
 ## Introduction
-The introduction page will go here
+This project represents the official OpenCart-compatible project for the BlueSnap Payment Gateway.
 
 ## Installation
-This section will detail the installation procedure
+The installation of the module is relatively simple and follows the standard OpenCart model for payment modules. 
+1. Download the contents of the folder that matches your version of OpenCart. For example, if you are using OpenCart 2.1.0.2, you would download the contents of the "oc_2000 - oc_2102" folder. 
+2. Copy the contents downloaded in the previous step to the webroot of your OpenCart installation
+3. Log onto your administration console, and navigate to "Extensions" -> "Payments", and click the "Install" button.
+
+Once installed you will can move on and configure the extension
 
 ## Configuration 
 This section will outline how to configure the plugin
@@ -36,3 +41,5 @@ BlueSnap processes payments for thousands of merchants selling both digital and 
 ### Links
 * BlueSnap website - https://www.bluesnap.com
 * Official plugin extension site - https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=30987 
+* Sandbox developer account - https://sandbox.bluesnap.com/
+* Sandbox test credit card numbers - https://support.bluesnap.com/docs/test-credit-card-numbers
