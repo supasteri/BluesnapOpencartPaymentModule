@@ -36,12 +36,24 @@ Once installed you will can move on and configure the extension.
 
 
 # Payment Module Configuration 
-Once installed, you will be able to configure the BlueSnap payment module. In order to configure the plugin, log into you administration console, and navigate to "Extensions" -> "Payments", and click the "Edit" (pen) button.
-![Payment Module Installation Process - OpenCart 2.1.0.2](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Admin%20-%20Extensions%20-%20Payments%20-%20post-installation%20-%20before-configuration.png
- "Plugin Configuration")
+Once installed, you will be able to configure the BlueSnap payment module. In order to configure the plugin, log into you administration console, and navigate to "Extensions" -> "Payments", and click the "Edit" (pen) button:
+
+![Payment Module Installation Process - OpenCart 2.1.0.2](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Admin%20-%20Extensions%20-%20Payments%20-%20post-installation%20-%20before-configuration.png "Plugin Configuration")
  
- 
-Before you can configure the plugin, you will need to ensure that you sign up for a sandbox account with your BlueSnap account manager. 
+You will be presented with the following configuration form: 
+
+![BlueSnap Payment Module Configuration Screen](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Admin%20-%20Module%20Features%20-%20Settings.png "BlueSnap Payment Module Configuration Screen")
+
+Once you have configured it with your settings, you can click the "Play" button top right to verify the settings. This process uses your configured credentials to try to log into the BlueSnap servers and verify that there are no authentication issues. 
+
+![BlueSnap Payment Module Settings Verification](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Admin%20-%20Module%20Features%20-%20Settings%20-%20Verification.png "BlueSnap Payment Module Settings Verification") 
+
+If the configuration was done correctly, you should see a message beginning with "Successfully authenticated with Bluesnap server"
+
+
+
+
+Note: Before you can configure the plugin, you will need to ensure that you sign up for a sandbox account with your BlueSnap account manager. 
 
 # Links
 * BlueSnap website - https://www.bluesnap.com
