@@ -1,5 +1,17 @@
 # Introduction
-This project represents the official OpenCart-compatible project for the BlueSnap Payment Gateway.
+This project represents the official OpenCart-compatible project for the BlueSnap Payment Gateway. 
+
+# Approach
+In order to effectively install and use this plugin with your OpenCart web store, you will need to:
+1. Engage with a BlueSnap representative to obtain access to their sandbox environment. This will give you access to a dashboard where your API credentials may be configured. 
+2. Install and configure your plugin to initially perform test transactions against the sandbox environment using test credit card numbers provided by BlueSnap.  
+3. Once you have set up and tested your installation against the BlueSnap sandbox environment, the final step will involve performing the production configuration. You will be required to gain access to the production BlueSnap account
+
+## Bluesnap Configuration
+To transact with the BlueSnap payment gateway (sandbox or production), you will need to:
+1. Log into the BlueSnap sandbox (https://sandbox.bluesnap.com) or production account pages (https://cp.bluesnap.com/jsp/developer_login.jsp) ![Bluesnap Sandbox Login Screen](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Login.png "Bluesnap Sandbox Login Screen")
+1. Configure your API key. 
+2. Configure your whitelisted API. 
 
 # Installation
 The installation of the module is relatively simple and follows the standard OpenCart model for payment modules. 
@@ -10,7 +22,8 @@ The installation of the module is relatively simple and follows the standard Ope
 ![Payment Module Installation Process - OpenCart 2.1.0.2](https://github.com/supasteri/Opencart-Bluesnap-Payment-Module/raw/master/image-assets/Admin%20-%20Extensions%20-%20Payments%20-%20before-installation.png "Installation process")
 Once installed you will can move on and configure the extension.
 
-# Configuration 
+
+# Payment Module Configuration 
 Once installed, you will be able to configure the BlueSnap payment module. In order to configure the plugin, log into you administration console, and navigate to "Extensions" -> "Payments", and click the "Edit" (pen) button.
 ![Payment Module Installation Process - OpenCart 2.1.0.2](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Admin%20-%20Extensions%20-%20Payments%20-%20post-installation%20-%20before-configuration.png
  "Plugin Configuration")
