@@ -6,6 +6,7 @@ The installation of the module is relatively simple and follows the standard Ope
 1. Download the contents of the folder that matches your version of OpenCart. For example, if you are using OpenCart 2.1.0.2, you would download the contents of the "oc_2000 - oc_2102" folder. 
 2. Copy the contents downloaded in the previous step to the webroot of your OpenCart installation
 3. Log onto your administration console, and navigate to "Extensions" -> "Payments", and click the "Install" (Plus) button.
+
 ![Payment Module Installation Process - OpenCart 2.1.0.2](https://github.com/supasteri/Opencart-Bluesnap-Payment-Module/raw/master/image-assets/Admin%20-%20Extensions%20-%20Payments%20-%20before-installation.png "Installation process")
 Once installed you will can move on and configure the extension.
 
