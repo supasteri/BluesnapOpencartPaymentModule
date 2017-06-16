@@ -7,7 +7,7 @@ The installation of the module is relatively simple and follows the standard Ope
 2. Copy the contents downloaded in the previous step to the webroot of your OpenCart installation
 3. Log onto your administration console, and navigate to "Extensions" -> "Payments", and click the "Install" button.
 
-Once installed you will can move on and configure the extension
+Once installed you will can move on and configure the extension.
 
 # Configuration 
 This section will outline how to configure the plugin
