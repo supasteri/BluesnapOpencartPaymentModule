@@ -34,5 +34,5 @@ With our OpenCart extension, you will never have to store credit card data. This
 BlueSnap processes payments for thousands of merchants selling both digital and physical goods worldwide.
 
 ### Links
-* (https://www.bluesnap.com "BlueSnap's website")
-* The latest version of this plugin can be downloaded at the (https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=30987 "OpenCart extension store")
+* BlueSnap website - https://www.bluesnap.com
+* Official plugin extension site - https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=30987 
