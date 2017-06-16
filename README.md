@@ -1,9 +1,9 @@
 # Introduction
 This project represents the official OpenCart-compatible project for the BlueSnap Payment Gateway. 
 
-# Approach
-In order to effectively install and use this plugin with your OpenCart web store, you will need to:
-1. Engage with a BlueSnap representative to obtain access to their sandbox environment. This will give you access to a dashboard where your API credentials may be configured. 
+# Before installing ...
+Before you can install and configure this payment module with your OpenCart web store, you will need to configure your BlueSnap merchant account as follows:
+1. Engage with a BlueSnap representative to obtain access to their sandbox environment. This will give you access to a dashboard where your API credentials may be configured. You can set up a Sandbox/Testing account at https://sandbox.bluesnap.com/jsp/new_developer_sandbox.jsp. Note that you will need a valid Merchant account for this process. 
 2. Install and configure your plugin to initially perform test transactions against the sandbox environment using test credit card numbers provided by BlueSnap.  
 3. Once you have set up and tested your installation against the BlueSnap sandbox environment, the final step will involve performing the production configuration. You will be required to gain access to the production BlueSnap account
 
@@ -13,9 +13,9 @@ To transact with the BlueSnap payment gateway (sandbox or production), you will 
 ![Bluesnap Sandbox Login Screen](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Login.png "Bluesnap Sandbox Login Screen")
 
 Once logged in, click on the "Settings -> API Settings" menu option:
+
 ![Bluesnap API Settings](https://raw.githubusercontent.com/supasteri/Opencart-Bluesnap-Payment-Module/master/image-assets/Bluesnap%20-%20Sandbox%20Environment%20-%20Post%20Login%20-%20API%20Settings.png
  "Bluesnap API Settings")
-
 
 You will now need to configure your API Credentials as well as your Authorised IPs, as follows: 
 
