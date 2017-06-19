@@ -14,38 +14,79 @@
   border: 1px solid #14ba57 ;
 }
 </style>
+<div id="payment">
+  <div class="content">
   <form id="checkout-form"> 
-      <div class="row">
-       <div class="form-group col-md-12">
-          <label for="cardholder-firstname"><?php echo $entry_firstname;?></label>
-          <input name="cardholder-firstname" required type="text" class="form-control" id="cardholder-firstname" placeholder="<?php echo $placeholder_firstname;?>">
-	  <span id="cardholder-firsname-help" class="helper-text"></span>
-       </div>
-       <div class="form-group col-md-12">
-          <label for="cardholder-lastname"><?php echo $entry_lastname;?></label>
-          <input name="cardholder-lastname" required type="text" class="form-control" id="cardholder-lastname" placeholder="<?php echo $placeholder_lastname;?>">
-	  <span id="cardholder-lastname-help" class="helper-text"></span>
-       </div>
-       <div class="form-group col-md-12">
+	<table class="form">
+	   <tr>
+        <td style="width:20%"><?php echo $entry_firstname; ?></td>
+        <td colpan="2">
+			<input name="cardholder-firstname" required type="text" class="form-control" id="cardholder-firstname" placeholder="<?php echo $placeholder_firstname;?>">
+			<br/> <span id="cardholder-firstname-help" class="helper-text"></span>
+		</td>
+      </tr>
+	  <tr>
+        <td style="width:20%"><?php echo $entry_lastname; ?></td>
+        <td colpan="2">
+			<input name="cardholder-lastname" required type="text" class="form-control" id="cardholder-lastname" placeholder="<?php echo $placeholder_lastname;?>">
+			<br/> <span id="cardholder-lastname-help" class="helper-text"></span>
+		</td>
+      </tr>
+	  <tr>
+        <td style="width:20%"><?php echo $entry_card_number; ?>
+			<span id="card-logo" class="input-group-addon"><img src="https://files.readme.io/d1a25b4-generic-card.png" height="20px"></span>
+        </td>
+        <td style="height:15px;">
+		    <span id="card-number" data-bluesnap="ccn"></span>
+			<span class="helper-text" id="card-help"></span>
+		</td>
+      </tr>
+	  <tr>
+        <td style="width:20%"><?php echo $entry_expiry_date; ?></td>
+        <td colpan="2" style="text-align:right; height:15px;">
+		    <span id="exp-date" data-bluesnap="exp"></span>
+			<br /> <span class="helper-text" id="card-help"></span>
+		</td>
+      </tr>
+	  <tr>
+        <td style="width:20%"><?php echo $entry_security_code; ?></td>
+        <td style="height:15px; text-align:right;">
+		    <span id="cvv" data-bluesnap="cvv"></span>
+			<br /> <span class="helper-text"></span>
+		</td>
+      </tr>
+
+      
+       <!--div class="form-group col-md-12">
           <label for="card-number"><?php echo $entry_card_number;?></label>
           <div class="input-group">
             <div class="form-control" id="card-number" data-bluesnap="ccn"></div>
             <div id="card-logo" class="input-group-addon"><img src="https://files.readme.io/d1a25b4-generic-card.png" height="20px"></div>
          </div>
          <span class="helper-text" id="card-help"></span>
-       </div>
-       <div class="form-group col-xs-7">
-          <label for="exp-date"><?php echo $entry_expiry_date;?></label>
-          <div class="form-control" id="exp-date" data-bluesnap="exp"></div>
-          <span class="helper-text"></span>
-       </div>
+       </div-->
+       <!--tr>
+          <td><?php echo $entry_expiry_date;?></td>
+          <td style="height:15px;">
+			<span id="exp-date" data-bluesnap="exp"></span>
+			<br/><span class="helper-text"></span>
+          </td>
+       </tr>
        <div class="form-group col-xs-5">
          <label for="cvv">Security Code</label>
          <div class="form-control" id="cvv" data-bluesnap="cvv"></div>
          <span class="helper-text"></span>
       </div>
-    </div>  
-    <button class="btn btn-success btn-lg col-xs-6 col-xs-offset-3" id="submit-button-bluesnap" disabled="disabled"><?php echo $button_pay_now;?></button>
+    </div-->  
+    </table>
+	<div class="buttons">
+	  <div class="right">
+		  <button class="button" id="submit-button-bluesnap" disabled="disabled"><?php echo $button_pay_now;?></button>
+		<!--input type="button" value="<?php echo $button_pay_now;?>" id="submit-button-bluesnap" class="button" disabled="disabled"/-->
+	  </div>
+	</div>
+
+    <!-- button class="btn btn-success btn-lg col-xs-6 col-xs-offset-3" id="submit-button-bluesnap" disabled="disabled"><?php echo $button_pay_now;?></button-->
   </form>
 <script type="text/javascript">
 	var ccnOk = false;
@@ -240,4 +281,4 @@
 <iframe width='1' height='1' frameborder='0' scrolling='no' src='<?php echo $bluesnap_url;?>/servlet/logo.htm?s=<?php echo $bluesnap_fraud_session_id;?>'>
      <img width='1' height='1' src='<?php echo $bluesnap_url;?>/servlet/logo.gif?s=<?php echo $bluesnap_fraud_session_id;?>'>
 </iframe>
-
+</div>
