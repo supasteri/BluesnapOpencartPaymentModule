@@ -57,6 +57,28 @@ final class Bluesnap {
 				PRIMARY KEY (`bluesnap_audit_id`)
 			) ENGINE=InnoDB;
 		");
+
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` (
+				`bluesnap_hosted_fields_audit_id` int(11) NOT NULL AUTO_INCREMENT,
+				`order_id` int(11) not null, 
+				`hosted_payment_field_id` varchar(1000), 
+				`expiry_date_time` varchar(1000),
+				`curl_request` text not null,
+                                `curl_reply` text not null,
+                                `http_status_code` int(11) not null,
+                                `server_ip` varchar(100),
+                                `remote_ip` varchar(100),
+                                `php_server_var` text,
+                                `php_session_var` text,
+                                `php_request_var` text,
+                                `result_code` int(11),
+                                `result_msg_code` varchar(100),
+                                `result_msg` text,
+                                `date_added` datetime,  
+				 PRIMARY KEY (`bluesnap_hosted_fields_audit_id`)
+			) ENGINE=InnoDB;
+		");
 	}
 
 	public function __construct($registry) {
@@ -71,8 +93,8 @@ final class Bluesnap {
 		$this->mode = $this->config->get("bluesnap_mode");
 		$this->sandbox_mode_enabled = $this->mode == "sandbox" ? 1 : 0;
 		$this->debug_enabled = $this->config->get("bluesnap_debug_enabled");
-		$this->description_prefix = $this->config->get('bluesnap_description_prefix');
-		$this->uuid = uniqid("MB", true);
+		$this->description_prefix = $this->config->get("bluesnap_description_prefix");
+		$this->uuid = uniqid("BS", false) . uniqid("",false);
                 if (strlen($this->uuid) > 30)
                         $this->uuid = substr($this->uuid,0,30);
 	}
@@ -196,23 +218,75 @@ final class Bluesnap {
 		);
 	}
 
-	public function auth_capture($order_info, $order_total, $hosted_payments_field, $fraud_session_id, $credit_card_info) { 
+	public function auth_capture($order_info, $order_total, $hosted_payments_field, $fraud_session_id, $credit_card_info) {
+		// print_r($order_info);
+		$order_total = round($order_info['total'] * $order_info['currency_value'],4);
 		$pf_token = $hosted_payments_field['TOKEN'];
 		$pf_token_expiry = $hosted_payments_field['EXPIRY_DATE_TIME'];
 		$result_code = 0;
 		$result_msg_code = 'OK';
 		$result_msg = '';
 		$recurring_transaction = "ECOMMERCE";
-		$description = $this->db->escape($this->description_prefix . " #" . $order_info['order_id']);
+		$description = $this->db->escape($this->description_prefix); // . " #" . $order_info['order_id']);
+		$cardHolderInfo = array(
+			'firstName'     => $credit_card_info['cardholderFirstName'],
+                        'lastName'      => $credit_card_info['cardholderLastName'],
+                       	'email'         => $order_info['email'],
+                        'country'       => strtolower($order_info['payment_iso_code_2']),
+                        'address'       => isset($order_info['payment_address_1']) ? $order_info['payment_address_1'] : '',
+                        'address2'      => isset($order_info['payment_address_2']) ? $order_info['payment_address_2'] : '',
+                        'city'          => isset($order_info['payment_city']) ? $order_info['payment_city'] : '',
+			'zip'		=> isset($order_info['payment_postcode']) ? $order_info['payment_postcode'] : '',
+			'phone'		=> isset($order_info['telephone']) ? strtoupper($order_info['telephone']) : '' ,
+			'merchant-shopper-id' => $order_info['customer_id']
+		); 
+		
+		if (strlen($cardHolderInfo['email']) > 100) {
+			$cardHolderInfo['email'] = substr($cardHolderInfo['email'],0,100);
+		} else if (strlen($cardHolderInfo['email']) < 3) {
+			unset($cardHolderInfo['email']);	
+		} 
+	
+		if (strlen($cardHolderInfo['address']) > 100) {
+			$cardHolderInfo['address'] = substr($cardHolderInfo['address'], 0, 100);
+		} else if (strlen($cardHolderInfo['address']) == 0) { 
+			unset($cardHolderInfo['address']);	
+		}
+
+		if (strlen($cardHolderInfo['address2']) > 42) { 
+			$cardHolderInfo['address2'] = substr($cardHolderInfo['address2'], 0, 42);
+		} else if (strlen($cardHolderInfo['address2']) < 2) { 
+			unset($cardHolderInfo['address2']);
+		}
+
+		if (strlen($cardHolderInfo['city']) > 42) {
+                        $cardHolderInfo['city'] = substr($cardHolderInfo['city'], 0, 42);
+                } else if (strlen($cardHolderInfo['city']) < 2) {
+                        unset($cardHolderInfo['city']);
+                }
+
+		if (strlen($cardHolderInfo['phone']) < 2) { 
+			unset($cardHolderInfo['phone']);
+		} else {
+			if (strlen($cardHolderInfo['phone']) > 36) { 
+				$cardHolderInfo['phone'] = substr($cardHolderInfo['phone'],0, 36);
+			}
+			$allowed_chars = str_split('0123456789+.ABCDEFGHIJKLMNOPQRSTUVWXYZ*#/\\()-');
+			$phone = str_split($cardHolderInfo['phone']);
+			for ($i = sizeof($phone) - 1; $i >= 0; $i--) {
+				if (!in_array($phone[$i], $allowed_chars)) {
+					unset($phone[$i]);
+				}
+			}
+			$cardHolderInfo['phone'] = implode('', $phone);
+		}
+
 		$request = array (
 			'amount'			=> $order_total,
 			'recurringTransaction' 		=> $recurring_transaction,
 			'merchantTransactionId' 	=> $order_info['order_id'],
 			'softDescriptor' 		=> $description,
-			'cardHolderInfo' => array (
-				'firstName' 	=> $credit_card_info['cardholderFirstName'],
-				'lastName'	=> $credit_card_info['cardholderLastName']
-			),
+			'cardHolderInfo' => $cardHolderInfo,
 			'currency' => $order_info['currency_code'],
 			'cardTransactionType' => "AUTH_CAPTURE",
 			'pfToken' => $pf_token,
@@ -220,6 +294,8 @@ final class Bluesnap {
 				'fraudSessionId' => $fraud_session_id,
 			),
 		);
+		//print_r($request);
+		//die();
 		$result = $this->do_request(self::API_PATH_TRANSACTIONS, 200, $request);
 		$result_code = $result['result_code'];
 		$result_msg_code = 'OK';
@@ -253,7 +329,7 @@ final class Bluesnap {
 		$remote_ip = $this->db->escape($_SERVER['REMOTE_ADDR']);
 		$php_server_var = $this->db->escape(print_r($_SERVER,true));
 		$php_request_var = $this->db->escape(print_r($_REQUEST,true));
-		$php_session_var = $this->db->escape(print_r($_SESSION,true));
+		$php_session_var = $this->db->escape(print_r($this->session,true));
 		$http_status_code = $this->db->escape($result['http_status_code']);	
 		$date_added = date('Y-m-d H:i:s');
 		$sql = ("
@@ -275,9 +351,18 @@ final class Bluesnap {
 		return $ret;
 	}
 
-       public function get_payment_field_token() {
+       public function get_payment_field_token($order_id = 0) {
                 $p = "get_payment_field_token(" . $this->uuid . "): ";
 		$result = $this->do_request(self::API_PATH_GET_PAYMENT_FIELD_TOKEN, 201);
+		$result_code = $result['result_code'];
+                $result_msg_code = 'OK';
+                $result_msg = "";
+                if ($result_code != 0) {
+                        $payload = json_decode($result['payload']);
+                        $result_msg_code = "BP-" . $payload->message[0]->code . ":" . $payload->message[0]->errorName;
+                        $result_msg = $payload->message[0]->description;
+                }
+
 		$response = $result['payload'];
 		$headers = $result['headers'];
                 $headers = explode("\n", $headers);
@@ -290,6 +375,32 @@ final class Bluesnap {
 				$expiry_date_time = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +" . self::PAYMENT_FIELD_TOKEN_TTL));
                        	}
                 }
+		$curl_request = $this->db->escape($result['curl_request']);
+                $curl_reply = $this->db->escape($result['curl_reply']);
+                $result_msg_code = $this->db->escape($result_msg_code);
+                $result_msg = $this->db->escape($result_msg);
+                $server_ip = $this->db->escape($_SERVER['SERVER_NAME'] . "/" . $_SERVER['SERVER_ADDR']);
+                $remote_ip = $this->db->escape($_SERVER['REMOTE_ADDR']);
+                $php_server_var = $this->db->escape(print_r($_SERVER,true));
+                $php_request_var = $this->db->escape(print_r($_REQUEST,true));
+                $php_session_var = $this->db->escape(print_r($this->session,true));
+                $http_status_code = $this->db->escape($result['http_status_code']);
+                $date_added = date('Y-m-d H:i:s');
+	
+		$sql = "
+ 			insert into `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` (
+                                `order_id`, `hosted_payment_field_id`, `expiry_date_time`, 
+                                `curl_request`, `curl_reply`, 
+                                `http_status_code`, `server_ip`, `remote_ip`, `php_server_var`, `php_session_var`, `php_request_var`,
+                                `result_code`, `result_msg_code`, `result_msg`, `date_added`
+                        ) values (
+                                '$order_id', '$payment_field_token', '$expiry_date_time', 
+                                '$curl_request', '$curl_reply', 
+                                '$http_status_code', '$server_ip', '$remote_ip', '$php_server_var', '$php_session_var', '$php_request_var',
+                                '$result_code', '$result_msg_code', '$result_msg', '$date_added'
+                        )
+		";
+		$this->db->query($sql);
                 if ($payment_field_token == null) {
                         throw new Exception($p . "Could not retrieve payment field token");
                 }
