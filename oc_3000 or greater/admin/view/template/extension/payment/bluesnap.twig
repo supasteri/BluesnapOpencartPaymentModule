@@ -95,11 +95,11 @@
                 		      {% endif %} 
 		                    </label>
 		                    <label class="radio-inline">
-		                      {% if payment_bluesnap_debug_enabled %}
-			                      <input type="radio" name="payment_bluesnap_debug_enabled" value="0" checked="checked" />
+		                      {% if not payment_bluesnap_debug_enabled %}
+			                      <input type="radio" name="payment_bluesnap_debug_enabled" value="0" checked="checked"/>
 			                      {{ text_no }}
 		                      {% else %}
-			                      <input type="radio" name="payment_bluesnap_debug_enabled" value="0" />
+			                      <input type="radio" name="payment_bluesnap_debug_enabled" value="0"  />
 			                      {{ text_no }}
 		                      {% endif %}
 		                    </label>
