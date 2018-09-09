@@ -148,27 +148,28 @@ final class Bluesnap {
 	protected function do_request($api_path, $expected_http_status_code, $payload = array()) {
 		$p = "do_request(" . $this->uuid . "): ";
 		$url = $this->get_url() . $api_path;
-                $username = $this->get_username();
-                $password = $this->get_password();
-                $ch = curl_init($url);
-                $curl_opts = array(
-                        CURLOPT_HEADER => true,
-                        CURLOPT_VERBOSE => $this->debug_enabled,
-                        CURLOPT_POST => true,
-                        CURLOPT_FOLLOWLOCATION => false,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-                        CURLOPT_USERPWD => $this->username . ":" . $this->password,
-                        CURLOPT_HTTPHEADER => array(
-                                'Content-Type: application/json'
-                        ),
-                );
+		$username = $this->get_username();
+		$password = $this->get_password();
+		$ch = curl_init($url);
+		$curl_opts = array(
+				CURLOPT_HEADER => true,
+				CURLOPT_VERBOSE => $this->debug_enabled,
+				CURLOPT_POST => true,
+				CURLOPT_FOLLOWLOCATION => false,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+				CURLOPT_POSTFIELDS => json_encode(array("a" => "b")),
+				CURLOPT_USERPWD => $this->username . ":" . $this->password,
+				CURLOPT_HTTPHEADER => array(
+						'Content-Type: application/json'
+				),
+		);
 		if (sizeof($payload) > 0) {
 			$curl_opts[CURLOPT_POSTFIELDS] = json_encode($payload);
 		}
-                curl_setopt_array($ch, $curl_opts);
-                $this->audit_temp_exit($p, $url, "[CURL_CONFIG: " . print_r($curl_opts, true). "]");    
-                $response = curl_exec($ch);
+		curl_setopt_array($ch, $curl_opts);
+		$this->audit_temp_exit($p, $url, "[CURL_CONFIG: " . print_r($curl_opts, true). "]");    
+		$response = curl_exec($ch);
 		$headers = "";
 		$payload = "";
 		$http_status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);	
@@ -283,17 +284,18 @@ final class Bluesnap {
                 $headers = explode("\n", $headers);
 		$payment_field_token = null;
 		$expiry_date_time = null;
-                foreach($headers as $header) {
-                       	if (stripos($header, 'Location:') !== false) {
-                        	$header = explode('/',$header);
-                                $payment_field_token = trim($header[sizeof($header) - 1]);
-				$expiry_date_time = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +" . self::PAYMENT_FIELD_TOKEN_TTL));
-                       	}
-                }
-                if ($payment_field_token == null) {
-                        throw new Exception($p . "Could not retrieve payment field token");
-                }
-                $this->debug($p,"Got payment field_token [$payment_field_token]");
-                return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);
-        }
+		foreach($headers as $header) {
+				if (stripos($header, 'Location:') !== false) {
+					$header = explode('/',$header);
+						$payment_field_token = trim($header[sizeof($header) - 1]);
+		$expiry_date_time = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +" . self::PAYMENT_FIELD_TOKEN_TTL));
+				}
+		}
+		if ($payment_field_token == null) {
+				throw new Exception($p . "Could not retrieve payment field token");
+		}
+		$this->debug($p,"Got payment field_token [$payment_field_token]");
+		return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);
+	}
 }
+?>

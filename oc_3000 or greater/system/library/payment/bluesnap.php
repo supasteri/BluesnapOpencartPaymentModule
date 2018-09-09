@@ -170,27 +170,28 @@ final class Bluesnap {
 	protected function do_request($api_path, $expected_http_status_code, $payload = array()) {
 		$p = "do_request(" . $this->uuid . "): ";
 		$url = $this->get_url() . $api_path;
-                $username = $this->get_username();
-                $password = $this->get_password();
-                $ch = curl_init($url);
-                $curl_opts = array(
-                        CURLOPT_HEADER => true,
-                        CURLOPT_VERBOSE => $this->debug_enabled,
-                        CURLOPT_POST => true,
-                        CURLOPT_FOLLOWLOCATION => false,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-                        CURLOPT_USERPWD => $this->username . ":" . $this->password,
-                        CURLOPT_HTTPHEADER => array(
-                                'Content-Type: application/json'
-                        ),
-                );
+		$username = $this->get_username();
+		$password = $this->get_password();
+		$ch = curl_init($url);
+		$curl_opts = array(
+				CURLOPT_HEADER => true,
+				CURLOPT_VERBOSE => $this->debug_enabled,
+				CURLOPT_POST => true,
+				CURLOPT_FOLLOWLOCATION => false,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+				CURLOPT_POSTFIELDS => json_encode(array("a" => "b")),
+				CURLOPT_USERPWD => $this->username . ":" . $this->password,
+				CURLOPT_HTTPHEADER => array(
+						'Content-Type: application/json'
+				),
+		);
 		if (sizeof($payload) > 0) {
 			$curl_opts[CURLOPT_POSTFIELDS] = json_encode($payload);
 		}
-                curl_setopt_array($ch, $curl_opts);
-                $this->audit_temp_exit($p, $url, "[CURL_CONFIG: " . print_r($curl_opts, true). "]");    
-                $response = curl_exec($ch);
+		curl_setopt_array($ch, $curl_opts);
+		$this->audit_temp_exit($p, $url, "[CURL_CONFIG: " . print_r($curl_opts, true). "]");    
+		$response = curl_exec($ch);
 		$headers = "";
 		$payload = "";
 		$http_status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);	
@@ -351,17 +352,19 @@ final class Bluesnap {
 		return $ret;
 	}
 
-       public function get_payment_field_token($order_id = 0) {
-                $p = "get_payment_field_token(" . $this->uuid . "): ";
+    public function get_payment_field_token($order_id = 0) {
+        $p = "get_payment_field_token(" . $this->uuid . "): ";
 		$result = $this->do_request(self::API_PATH_GET_PAYMENT_FIELD_TOKEN, 201);
 		$result_code = $result['result_code'];
-                $result_msg_code = 'OK';
-                $result_msg = "";
-                if ($result_code != 0) {
-                        $payload = json_decode($result['payload']);
-                        $result_msg_code = "BP-" . $payload->message[0]->code . ":" . $payload->message[0]->errorName;
-                        $result_msg = $payload->message[0]->description;
-                }
+		$result_msg_code = 'OK';
+		$result_msg = "";
+		if ($result_code != 0) {
+			$payload = json_decode($result['payload']);
+ 			$msgCode = isset($payload->message[0]->code) ? $payload->message[0]->code : "UNKNOWN"; 
+			$errorName = isset($payload->message[0]->errorName) ? $payload->message[0]->errorName : "UNKNOWN"; 
+			$result_msg_code = "BP-${msgCode}:${errorName}";
+			$result_msg = isset($payload->message[0]->description) ? $payload->message[0]->description : "Unknown Description";
+		}
 
 		$response = $result['payload'];
 		$headers = $result['headers'];
@@ -401,10 +404,11 @@ final class Bluesnap {
                         )
 		";
 		$this->db->query($sql);
-                if ($payment_field_token == null) {
-                        throw new Exception($p . "Could not retrieve payment field token");
-                }
-                $this->debug($p,"Got payment field_token [$payment_field_token]");
-                return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);
-        }
+		if ($payment_field_token == null) {
+				throw new Exception($p . "Could not retrieve payment field token");
+		}
+		$this->debug($p,"Got payment field_token [$payment_field_token]");
+		return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);
+	}
 }
+?>
