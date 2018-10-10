@@ -3,6 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
+	<button id="show_log_button" data-toggle="tooltip" title="<?php echo $button_show_error_log;?>" class="btn btn-primary"><?php echo $button_show_error_log;?></button>
 	<button id="verify_settings_button" data-toggle="tooltip" title="<?php echo $button_verify_settings; ?>" class="btn btn-primary"><i class="fa fa-play"></i></button>
 
         <button type="submit" form="form-bluesnap" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
@@ -34,6 +35,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a data-toggle="tab" href="#tab-settings">Settings</a></li>
 		<li><a data-toggle="tab" href="#tab-transactions">Transactions</a></li>
+		<li><a data-toggle="tab" href="#tab-traces">Traces</a></li>
 	</ul>
 	<div class="tab-content">
 		<div class="tab-pane active" id="tab-settings">
@@ -279,7 +281,77 @@
 </div> 
 
                 </div>
+
+		<div class="tab-pane" id="tab-traces">
+  <form method="post" enctype="multipart/form-data" id="form-order">
+          <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                        <tr>
+                          <td class="text-right"><a href="javascript:void();"><?php echo $auditdata['column_trace_id']; ?></a></td>
+                          <td class="text-left"><a href="javascript:void();"><?php echo $auditdata['column_outcome']; ?></a></td>
+                	  <td class="text-left"><a href="javascript:void();"><?php echo $auditdata['column_date_added']; ?></a></td>
+                          <td class="text-left"><a href="javascript:void();"><?php echo $auditdata['column_remote_ip']; ?></a></td>
+                          <td class="text-right"><?php echo $auditdata['column_action']; ?></td>
+                        </tr>
+                  </thead>
+                  <tbody>
+                   <?php if ($auditdata['entries']) { ?>
+                        <?php foreach ($auditdata['entries'] as $entry) { ?>
+                        <tr>
+                          <td class="text-right"><?php echo $entry['bluesnap_audit_id']; ?></td>
+                          <td class="text-left"><?php echo $entry['status']; ?></td>
+                          <td class="text-left"><?php echo $entry['date_added']; ?></td>
+                          <td class="text-left"><?php echo $entry['remote_ip']; ?></td>
+                          <td class="text-right"><a data-bluesnap_hosted_audit_id="<?php echo $entry['bluesnap_audit_id'];?>" data-audit_hosted_viewer_url="<?php echo $entry['view']; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="show_audit_hosted_log btn btn-info"><i class="fa fa-eye"></i></a>
+                        </tr>
+                        <?php } ?>
+                        <?php } else { ?>
+                        <tr>
+                          <td class="text-center" colspan="6"><?php echo $auditdata['text_no_results']; ?></td>
+                        </tr>
+                        <?php } ?>
+                  </tbody>
+                </table>
+          </div>
+        </form>		
+	<div class="row">
+            <div class="col-sm-6 text-left"><?php echo $auditdata['pagination']; ?></div>
+            <div class="col-sm-6 text-right"><?php echo $auditdata['results']; ?></div>
+        </div>
+	<div id="auditHostedViewerModal" class="modal fade in" aria-hidden="true">
+    		<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+               			 <div class="modal-header">
+                        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+                        		<h4 class="modal-title" id="audithostedviewer-modal-title"></h4>
+                		</div>
+                		<div class="modal-body" id="audithostedviewer-modal-body">
+                		</div>
+                		<div class="modal-footer">
+                        		<a href="#" class="btn btn-primary" data-dismiss="modal"><?php echo $auditdata['button_modal_popup_close'];?></a>
+                		</div>
+        		</div>
+   		</div>
 	</div>
+
+	</div></div>
+			<!-- Modal -->
+			<div class="modal fade" id="errorModal"  aria-hidden="true">
+			  <div class="modal-dialog modal-lg">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="errortitle"></h4>
+				     </div>
+				      <div class="modal-body" id="errBody"></div>
+				      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+
     </div>
   </div>
 </div>
@@ -316,6 +388,33 @@ $(".show_audit_log").on("click", function(e) {
 	html += "</tbody></table>";
 	$("#auditviewer-modal-body").html(html);
 	$('#auditViewerModal').modal('show');
+});
+
+$(".show_audit_hosted_log").on("click", function(e) {
+        var bluesnap_hosted_fields_audit_id= $(this).data("bluesnap_hosted_audit_id");
+        $("#audithostedviewer-modal-title").html("<?php echo $auditdata['modal_hosted_popup_title'];?>" + bluesnap_hosted_fields_audit_id);
+        var html = "<table class='table table-hover'><thead><tr><th>Name</th><th>Value</th></tr></thead><tbody>";
+        $.ajax({
+                type: 'POST',
+                url: 'index.php?route=extension/payment/bluesnap/get_hosted_audit_entry&token=<?php echo $token;?>',
+                async: false,
+                data: { bluesnap_hosted_fields_audit_id: bluesnap_hosted_fields_audit_id },
+                success: function(data) {console.log("data is here",data);
+                        if (data.result_code != 0) {
+                                alert(data.result_msg);
+                        } else {
+                                $.each(data.bluesnap_audit_record , function(key, value) {
+                                		if(key == 'curl_reply'){
+											value = value.replace(/(<([^>]+)>)/ig,"");
+										}
+                                        html += "<tr><td>" + key + "</td><td style='max-width:600px;overflow-x:auto;'><pre>"+ value +"</pre></td></tr>";
+                                });
+                        }
+                },
+        });
+        html += "</tbody></table>";
+        $("#audithostedviewer-modal-body").html(html);
+        $('#auditHostedViewerModal').modal('show');
 });
 
 $('#button-filter').on('click', function() {
@@ -377,8 +476,21 @@ $("#verify_settings_button").on("click", function() {
         sync: false,
         data : { mode : mode, username : username, password : password }, 
         success: function(data) {
-			alert(data.result_msg);
-		},
+		if(data.result_msg==undefined)
+        	{
+        		alert('Your session has been expired. Please login again!!');
+        		window.location.href="index.php?route=common/login";
+        	}else{
+			if(data.result_code==1){
+				var res = data.result_msg.split("=======");
+				$("#errBody").html(res[1]);
+				$("#errortitle").html(res[0]+" "+res[2]);
+				$('#errorModal').modal('show');			
+			}else{
+				alert(data.result_msg);
+			}	
+		}
+	},
 		complete: function() {
 			$("#verify_settings_button i")
 				.removeClass("fa-circle-o-notch").removeClass("fa-spin")
@@ -387,6 +499,21 @@ $("#verify_settings_button").on("click", function() {
 			;
 		}
 	});
+});
+
+$("#input-mode").on("change", function(){
+	if($("#input-mode").val()=='production'){
+		$("#input-username").val('<?php if(isset($settingdata['bluesnap_production_username'])) {echo $settingdata['bluesnap_production_username'];}else{ echo "";}?>');
+		$("#input-password").val('<?php if(isset($settingdata['bluesnap_production_password'])) {echo $settingdata['bluesnap_production_password'];}else{echo "";}?>');
+	}else{
+		$("#input-username").val('<?php if(isset($settingdata['bluesnap_username'])){echo $settingdata['bluesnap_username'];}else{echo  "";}?>');
+                $("#input-password").val('<?php if(isset($settingdata['bluesnap_password'])){echo $settingdata['bluesnap_password'];}else{echo "";}?>');
+	}
+
+});
+
+$("#show_log_button").click(function(){
+	window.open('index.php?route=tool/error_log&token=<?php echo $token;?>', '_blank');
 });
 </script>
 

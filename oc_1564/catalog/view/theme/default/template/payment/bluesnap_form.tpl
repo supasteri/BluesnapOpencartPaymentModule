@@ -1,3 +1,10 @@
+<?php if(isset($bluesnap_config_error) && $bluesnap_config_error == 1){ ?>
+<script>
+	alert('<?php echo $bluesnap_config_error_message;?>');
+	$(".checkout-content").css("display","none");
+	$("#payment-method").children().css("display","block");
+</script>
+<?php }else{ ?>
 <style>
 /* Hosted Payment Fields styles*/
 .hosted-field-focus { 
@@ -18,7 +25,7 @@
   <div class="content">
   <form id="checkout-form"> 
 	<table class="form">
-	   <tr>
+	   <!-- <tr>
         <td style="width:20%"><?php echo $entry_firstname; ?></td>
         <td colpan="2">
 			<input name="cardholder-firstname" required type="text" class="form-control" id="cardholder-firstname" placeholder="<?php echo $placeholder_firstname;?>">
@@ -31,7 +38,7 @@
 			<input name="cardholder-lastname" required type="text" class="form-control" id="cardholder-lastname" placeholder="<?php echo $placeholder_lastname;?>">
 			<br/> <span id="cardholder-lastname-help" class="helper-text"></span>
 		</td>
-      </tr>
+      </tr> -->
 	  <tr>
         <td style="width:20%"><?php echo $entry_card_number; ?>
 			<span id="card-logo" class="input-group-addon"><img src="https://files.readme.io/d1a25b4-generic-card.png" height="20px"></span>
@@ -55,7 +62,20 @@
 			<br /> <span class="helper-text"></span>
 		</td>
       </tr>
-
+       <tr>
+        <td style="width:20%"><?php echo $entry_firstname; ?></td>
+        <td colpan="2">
+                        <input name="cardholder-firstname" required type="text" class="form-control" id="cardholder-firstname" placeholder="<?php echo $placeholder_firstname;?>">
+                        <br/> <span id="cardholder-firstname-help" class="helper-text"></span>
+                </td>
+      </tr>
+          <tr>
+        <td style="width:20%"><?php echo $entry_lastname; ?></td>
+        <td colpan="2">
+                        <input name="cardholder-lastname" required type="text" class="form-control" id="cardholder-lastname" placeholder="<?php echo $placeholder_lastname;?>">
+                        <br/> <span id="cardholder-lastname-help" class="helper-text"></span>
+                </td>
+      </tr>
       
        <!--div class="form-group col-md-12">
           <label for="card-number"><?php echo $entry_card_number;?></label>
@@ -225,7 +245,17 @@
                         $(this).removeClass( "hosted-field-focus hosted-field-invalid" ).addClass( "hosted-field-valid" ).next('span').text('');
                 }
                 checkForm(); 
-        });
+        }).on("keyup", function() {
+		if ($(this).val().length == 0) {
+			$(this).removeClass( "hosted-field-focus hosted-field-valid" ).addClass( "hosted-field-invalid" ).next('span').text('<?php echo $error_lastname; ?>');
+							
+		} else {
+			$(this).removeClass( "hosted-field-focus hosted-field-invalid" ).addClass( "hosted-field-valid" ).next('span').text('');
+			lastNameOk = true;
+			checkForm();
+		}
+			
+	});
 
 	function checkForm() {
 		console.log("Checking form");
@@ -281,4 +311,5 @@
 <iframe width='1' height='1' frameborder='0' scrolling='no' src='<?php echo $bluesnap_url;?>/servlet/logo.htm?s=<?php echo $bluesnap_fraud_session_id;?>'>
      <img width='1' height='1' src='<?php echo $bluesnap_url;?>/servlet/logo.gif?s=<?php echo $bluesnap_fraud_session_id;?>'>
 </iframe>
+<?php } ?>
 </div>

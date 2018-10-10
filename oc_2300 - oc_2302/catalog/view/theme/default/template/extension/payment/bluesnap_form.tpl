@@ -1,5 +1,30 @@
 <?php if (isset($bluesnap_config_error) && $bluesnap_config_error == 1) {?> 
-	<script>alert('<?php echo $bluesnap_config_error_message;?>');</script>
+	<script>
+		$('#errorModal').modal('show');
+		$('#errorModal').on('hide.bs.modal', function (e) {
+			$(".panel-collapse").removeClass('in');
+			$("#collapse-payment-method").toggleClass('in');
+			$("#collapse-payment-method").removeAttr("style");
+		});
+	</script>
+<!-- Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Notification Message</h4>
+      </div>
+      <div class="modal-body">
+        <?php echo $bluesnap_config_error_message;?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php } else {?>
 
 <style>
@@ -22,16 +47,6 @@
     
       <div class="row">
        <div class="form-group col-md-12">
-          <label for="cardholder-firstname"><?php echo $entry_firstname;?></label>
-          <input name="cardholder-firstname" required type="text" class="form-control" id="cardholder-firstname" placeholder="<?php echo $placeholder_firstname;?>">
-	  <span id="cardholder-firsname-help" class="helper-text"></span>
-       </div>
-       <div class="form-group col-md-12">
-          <label for="cardholder-lastname"><?php echo $entry_lastname;?></label>
-          <input name="cardholder-lastname" required type="text" class="form-control" id="cardholder-lastname" placeholder="<?php echo $placeholder_lastname;?>">
-	  <span id="cardholder-lastname-help" class="helper-text"></span>
-       </div>
-       <div class="form-group col-md-12">
           <label for="card-number"><?php echo $entry_card_number;?></label>
           <div class="input-group">
             <div class="form-control" id="card-number" data-bluesnap="ccn"></div>
@@ -49,6 +64,16 @@
          <div class="form-control" id="cvv" data-bluesnap="cvv"></div>
          <span class="helper-text"></span>
       </div>
+      <div class="form-group col-md-12">
+          <label for="cardholder-firstname"><?php echo $entry_firstname;?></label>
+          <input name="cardholder-firstname" required type="text" class="form-control" id="cardholder-firstname" placeholder="<?php echo $placeholder_firstname;?>">
+          <span id="cardholder-firsname-help" class="helper-text"></span>
+       </div>
+       <div class="form-group col-md-12">
+          <label for="cardholder-lastname"><?php echo $entry_lastname;?></label>
+          <input name="cardholder-lastname" required type="text" class="form-control" id="cardholder-lastname" placeholder="<?php echo $placeholder_lastname;?>">
+          <span id="cardholder-lastname-help" class="helper-text"></span>
+       </div>
     </div>  
     <button class="btn btn-success btn-lg col-xs-6 col-xs-offset-3" id="submit-button-bluesnap" disabled="disabled"><?php echo $button_pay_now;?></button>
   </form>
@@ -189,7 +214,17 @@
                         $(this).removeClass( "hosted-field-focus hosted-field-invalid" ).addClass( "hosted-field-valid" ).next('span').text('');
                 }
                 checkForm(); 
-        });
+	)}.on("keyup", function() {
+		if ($(this).val().length == 0) {
+			$(this).removeClass( "hosted-field-focus hosted-field-valid" ).addClass( "hosted-field-invalid" ).next('span').text('<?php echo $error_lastname; ?>');
+							
+		} else {
+			$(this).removeClass( "hosted-field-focus hosted-field-invalid" ).addClass( "hosted-field-valid" ).next('span').text('');
+			lastNameOk = true;
+			checkForm();
+		}
+			
+	});
 
 	function checkForm() {
 		console.log("Checking form");

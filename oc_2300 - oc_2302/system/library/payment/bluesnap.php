@@ -405,7 +405,7 @@ final class Bluesnap {
 		";
 		$this->db->query($sql);
 		if ($payment_field_token == null) {
-				throw new Exception($p . "Could not retrieve payment field token");
+				throw new Exception($p . "Could not retrieve payment field token. CURL Response =>".$curl_reply);
 		}
 		$this->debug($p,"Got payment field_token [$payment_field_token]");
 		return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);

@@ -4,7 +4,7 @@ $_['text_title'] = 'Credit Card / Debit Card (Bluesnap)';
 $_['button_confirm_bluesnap'] = 'Pay with Bluesnap';
 $_['button_pay_now']	= "Pay Now";
 
-
+$_['bluesnap_config_error_message'] 	= 'Error: Bluesnap payment module does not appear to be configured correctly! Please notify the website administrators!';
 $_['error_not_bluesnap_payment_method'] 		= 'Error: Bluesnap payment method is not currently selected!';
 $_['error_not_bluesnap_hosted_payments_field_missing'] 	= 'Error: Session fields missing!';
 $_['error_bluesnap_hosted_payment_field_expired']	= 'Error: Payment form has expired!';

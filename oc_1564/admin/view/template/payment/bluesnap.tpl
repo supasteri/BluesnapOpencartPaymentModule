@@ -8,16 +8,78 @@
   <?php if ($error_warning) { ?>
   <div class="warning"><?php echo $error_warning; ?></div>
   <?php } ?>
+    <div class="warning" style="display:none;"></div>
   <div class="box">
     <div class="heading">
       <h1><img src="view/image/payment.png" alt="" /> <?php echo $heading_title; ?></h1>
-      <div class="buttons"><a class="button" id="verify_settings_button"><?php echo $button_verify_settings;?></a><a onclick="$('#form').submit();" class="button"><?php echo $button_save; ?></a><a href="<?php echo $cancel; ?>" class="button"><?php echo $button_cancel; ?></a></div>
+      <div class="buttons"><a id="show_log_button" href=javascript:void();" class="button"><?php echo $button_show_error_log; ?></a><a class="button" id="verify_settings_button"><?php echo $button_verify_settings;?></a><a onclick="$('#form').submit();" class="button"><?php echo $button_save; ?></a><a href="<?php echo $cancel; ?>" class="button"><?php echo $button_cancel; ?></a></div>
     </div>
     <div class="content">
-	  <div id="tabs" class="htabs"><a href="#tab-settings">Settings</a><a href="#tab-transactions">Transactions</a></div>
-	  <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	  <div id="tabs" class="htabs"><a href="#tab-settings">Settings</a><a href="#tab-transactions">Transactions</a><a href="#tab-traces">Traces</a></div>
+	   <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	   <div id="tab-traces">
+                <table class="list">
+                        <thead>
+                          <tr>
+                            <td class="left"><?php echo $auditdata['column_trace_id'];?></td>
+                            <td class="left"><?php echo $auditdata['column_outcome'];?></td>
+                            <td class="right"><?php echo $auditdata['column_date_added'];?></td>
+                            <td class="right"><?php echo $auditdata['column_remote_ip'];?></td>
+                            <td class="right"><?php echo $auditdata['column_action'];?></td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                <?php if($entries!=""){
+                        foreach($auditdata['entries'] as $entry){?>
+                        <tr>
+                            <td class="left"><?php echo $entry['bluesnap_audit_id']; ?></td>
+                            <td class="left"><?php echo $entry['status']; ?></td>
+                            <td class="right"><?php echo $entry['date_added']; ?></td>
+                            <td class="right"><?php echo $entry['remote_ip']; ?></td>
+                            <td class="right"><a data-bluesnap_audit_id="<?php echo $entry['bluesnap_audit_id'];?>" href="<?php echo $entry['view']; ?>" data-toggle="tooltip" title="View" class="show_audit_log btn btn-info" target="_blank">View</a></td>
+                        </tr>
+                        <?php }
+                        }else{ ?>
+                                <tr>
+                                        <td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
+                                </tr>
+                <?php } ?>
+                        </tbody>
+                </table>
+                <div class="pagination"><?php echo $auditdata['pagination']; ?></div>
+            </div>
 	    <div id="tab-transactions">
-			Transactions will be added here
+		<table class="list">
+			<thead>	
+		          <tr>
+		            <td class="left"><?php echo $column_order_id;?></td>
+		            <td class="left"><?php echo $column_outcome;?></td>
+		            <td class="right"><?php echo $column_total;?></td>
+		            <td class="right"><?php echo $column_date_added;?></td>
+			    <td class="right"><?php echo $column_remote_ip;?></td>
+			    <td class="right"><?php echo $column_action;?></td>
+		          </tr>
+        		</thead>
+			<tbody>
+		<?php if($entries!=""){
+			foreach($entries as $entry){?>
+			<tr>
+   			    <td class="left"><?php echo $entry['order_id']; ?></td>
+                            <td class="left"><?php echo $entry['status']; ?></td>
+                            <td class="right"><?php echo $entry['total']; ?></td>
+                            <td class="right"><?php echo $entry['date_added']; ?></td>
+                            <td class="right"><?php echo $entry['remote_ip']; ?></td>
+                            <td class="right"><a data-bluesnap_audit_id="<?php echo $entry['bluesnap_audit_id'];?>" href="<?php echo $entry['view']; ?>" data-toggle="tooltip" title="View" class="show_audit_log btn btn-info" target="_blank">View</a></td>
+			</tr>
+			<?php } 
+			}else{ ?>
+				<tr>
+					<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
+				</tr>
+		<?php } ?>
+			</tbody>
+		</table>
+		<div class="pagination"><?php echo $pagination; ?></div>
 	    </div>
 		<div id="tab-settings">
 			<table class="form">
@@ -143,8 +205,18 @@ $("#verify_settings_button").on("click", function() {
         sync: false,
         data : { mode : mode, username : username, password : password }, 
         success: function(data) {
-			alert(data.result_msg);
-		},
+		if(data.result_msg==undefined)
+        	{
+        		alert('Your session has been expired. Please login again!!');
+        		window.location.href="index.php?route=common/login";
+        	}else{
+			if(data.result_code==1){
+				$(".warning").html(data.result_msg).show();
+			}else{
+				alert(data.result_msg);
+			}	
+		}
+	},
 		complete: function() {
 			$("#verify_settings_button i")
 				.removeClass("fa-circle-o-notch").removeClass("fa-spin")
@@ -155,6 +227,20 @@ $("#verify_settings_button").on("click", function() {
 	});
 });
 
+$("#input-mode").on("change", function(){
+	if($("#input-mode").val()=='production'){
+		$("#input-username").val('<?php if(isset($settingdata['bluesnap_production_username'])){echo $settingdata['bluesnap_production_username'];}else{echo  "";}?>');
+		$("#input-password").val('<?php if(isset($settingdata['bluesnap_production_password'])){echo $settingdata['bluesnap_production_password'];}else{echo "";}?>');
+	}else{
+		$("#input-username").val('<?php if(isset($settingdata['bluesnap_username'])){echo $settingdata['bluesnap_username'];}else{echo "";}?>');
+                $("#input-password").val('<?php if(isset($settingdata['bluesnap_password'])){echo $settingdata['bluesnap_password'];}else{echo "";}?>');
+	}
+
+});
+
+$("#show_log_button").click(function(){
+	window.open('index.php?route=tool/error_log&token=<?php echo $token;?>', '_blank');
+});
 </script>
 
 <script type="text/javascript"><!--

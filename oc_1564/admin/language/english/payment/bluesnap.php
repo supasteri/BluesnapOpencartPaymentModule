@@ -73,11 +73,13 @@ $_['column_outcome']   	= 'Outcome';
 $_['column_total']    	= 'Total';
 $_['column_date_added']    = 'Date Added';
 $_['column_remote_ip']    = 'Remote IP';
+$_['column_trace_id']   = 'Trace ID';
 
 $_['entry_order_id']	= 'Order ID';
 $_['entry_outcome']	= 'Outcome';
 $_['entry_remote_ip']	= 'Remote IP';
 $_['entry_date_added']	= 'Date Added';
+$_['entry_trace_id']   = 'Trace ID';
 
 $_['text_payment_info']	= 'Payment Audit History';
 $_['text_audit_entry_title']	= 'Audit Entry #';
@@ -88,5 +90,6 @@ $_['text_no_results']	= 'No entries found!';
 
 $_['modal_popup_title'] 	= 'Audit Entry : Bluesnap Audit ID ';
 $_['button_modal_popup_close'] 	= 'Close';
-
+$_['button_show_error_log']  = 'Error Log';
+$_['modal_hosted_popup_title']         = 'Audit Entry : Transaction ID ';
 

@@ -57,6 +57,28 @@ final class Bluesnap {
 				PRIMARY KEY (`bluesnap_audit_id`)
 			) ENGINE=InnoDB;
 		");
+		
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` (
+				`bluesnap_hosted_fields_audit_id` int(11) NOT NULL AUTO_INCREMENT,
+				`order_id` int(11) not null, 
+				`hosted_payment_field_id` varchar(1000), 
+				`expiry_date_time` varchar(1000),
+				`curl_request` text not null,
+                                `curl_reply` text not null,
+                                `http_status_code` int(11) not null,
+                                `server_ip` varchar(100),
+                                `remote_ip` varchar(100),
+                                `php_server_var` text,
+                                `php_session_var` text,
+                                `php_request_var` text,
+                                `result_code` int(11),
+                                `result_msg_code` varchar(100),
+                                `result_msg` text,
+                                `date_added` datetime,  
+				 PRIMARY KEY (`bluesnap_hosted_fields_audit_id`)
+			) ENGINE=InnoDB;
+		");
 	}
 
 	public function __construct($registry) {
@@ -276,8 +298,8 @@ final class Bluesnap {
 		return $ret;
 	}
 
-       public function get_payment_field_token() {
-                $p = "get_payment_field_token(" . $this->uuid . "): ";
+       public function get_payment_field_token($order_id = 0) {
+                /*$p = "get_payment_field_token(" . $this->uuid . "): ";
 		$result = $this->do_request(self::API_PATH_GET_PAYMENT_FIELD_TOKEN, 201);
 		$response = $result['payload'];
 		$headers = $result['headers'];
@@ -292,7 +314,64 @@ final class Bluesnap {
 				}
 		}
 		if ($payment_field_token == null) {
-				throw new Exception($p . "Could not retrieve payment field token");
+				throw new Exception($p . "Could not retrieve payment field token".$response);
+		}
+		$this->debug($p,"Got payment field_token [$payment_field_token]");
+		return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);*/
+		
+		$p = "get_payment_field_token(" . $this->uuid . "): ";
+		$result = $this->do_request(self::API_PATH_GET_PAYMENT_FIELD_TOKEN, 201);
+		$result_code = $result['result_code'];
+		$result_msg_code = 'OK';
+		$result_msg = "";
+		if ($result_code != 0) {
+			$payload = json_decode($result['payload']);
+ 			$msgCode = isset($payload->message[0]->code) ? $payload->message[0]->code : "UNKNOWN"; 
+			$errorName = isset($payload->message[0]->errorName) ? $payload->message[0]->errorName : "UNKNOWN"; 
+			$result_msg_code = "BP-${msgCode}:${errorName}";
+			$result_msg = isset($payload->message[0]->description) ? $payload->message[0]->description : "Unknown Description";
+		}
+
+		$response = $result['payload'];
+		$headers = $result['headers'];
+                $headers = explode("\n", $headers);
+		$payment_field_token = null;
+		$expiry_date_time = null;
+                foreach($headers as $header) {
+                       	if (stripos($header, 'Location:') !== false) {
+                        	$header = explode('/',$header);
+                                $payment_field_token = trim($header[sizeof($header) - 1]);
+				$expiry_date_time = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +" . self::PAYMENT_FIELD_TOKEN_TTL));
+                       	}
+                }
+		$curl_request = $this->db->escape($result['curl_request']);
+                $curl_reply = $this->db->escape($result['curl_reply']);
+                $result_msg_code = $this->db->escape($result_msg_code);
+                $result_msg = $this->db->escape($result_msg);
+                $server_ip = $this->db->escape($_SERVER['SERVER_NAME'] . "/" . $_SERVER['SERVER_ADDR']);
+                $remote_ip = $this->db->escape($_SERVER['REMOTE_ADDR']);
+                $php_server_var = $this->db->escape(print_r($_SERVER,true));
+                $php_request_var = $this->db->escape(print_r($_REQUEST,true));
+                $php_session_var = $this->db->escape(print_r($this->session,true));
+                $http_status_code = $this->db->escape($result['http_status_code']);
+                $date_added = date('Y-m-d H:i:s');
+	
+		$sql = "
+ 			insert into `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` (
+                                `order_id`, `hosted_payment_field_id`, `expiry_date_time`, 
+                                `curl_request`, `curl_reply`, 
+                                `http_status_code`, `server_ip`, `remote_ip`, `php_server_var`, `php_session_var`, `php_request_var`,
+                                `result_code`, `result_msg_code`, `result_msg`, `date_added`
+                        ) values (
+                                '$order_id', '$payment_field_token', '$expiry_date_time', 
+                                '$curl_request', '$curl_reply', 
+                                '$http_status_code', '$server_ip', '$remote_ip', '$php_server_var', '$php_session_var', '$php_request_var',
+                                '$result_code', '$result_msg_code', '$result_msg', '$date_added'
+                        )
+		";
+		$this->db->query($sql);
+		if ($payment_field_token == null) {
+				throw new Exception($p . "Could not retrieve payment field token. CURL Response =>".$curl_reply);
 		}
 		$this->debug($p,"Got payment field_token [$payment_field_token]");
 		return array('TOKEN' => $payment_field_token, 'EXPIRY_DATE_TIME' => $expiry_date_time);

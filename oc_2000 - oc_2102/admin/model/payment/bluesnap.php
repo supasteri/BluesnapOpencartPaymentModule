@@ -106,4 +106,58 @@ class ModelPaymentBluesnap extends Model {
 		$query = $this->db->query($sql);
 		return $query->rows;
 	}
+
+	public function get_audit_total_entries($data) {
+                $sql = "select count(*) as total from `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` where 1 = 1 " . $this->get_where_clause($data);
+                $result = $this->db->query($sql);
+                return $result->row['total'];
+
+        }
+
+        public function get_audit_entry($bluesnap_audit_id) {
+                $sql = "select * from `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` where bluesnap_hosted_fields_audit_id = '" . (int) $bluesnap_audit_id . "'";
+                $result = $this->db->query($sql);
+                if (isset($result->row['bluesnap_hosted_fields_audit_id'])) {
+                        return $result->row;
+                } else {
+                        return null;
+                }
+        }
+
+	public function get_audit_entries($data) {
+                $sql = "select * from `" . DB_PREFIX . "bluesnap_audit_trail_hosted_payment_fields` where 1 = 1 " . $this->get_where_clause($data);
+                $sort_data = array(
+                        'name',
+                        'result_code',
+                        'approved',
+                        'remote_ip',
+                        'date_added'
+                );
+
+                if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+                        $sql .= " ORDER BY " . $data['sort'];
+                } else {
+                        $sql .= " ORDER BY bluesnap_hosted_fields_audit_id";
+                }
+
+                //if (isset($data['order']) && ($data['order'] == 'DESC')) {
+                        $sql .= " DESC";
+                //} else {
+                        //$sql .= " ASC";
+                //}
+
+                if (isset($data['start']) || isset($data['limit'])) {
+                        if ($data['start'] < 0) {
+                                $data['start'] = 0;
+                        }
+
+                        if ($data['limit'] < 1) {
+                                $data['limit'] = 20;
+                        }
+
+                        $sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+                }
+                $query = $this->db->query($sql);
+                return $query->rows;
+        }
 }
