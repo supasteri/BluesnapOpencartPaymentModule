@@ -51,14 +51,14 @@ class ControllerExtensionPaymentBluesnap extends Controller {
 		$settingdata= $this->model_setting_setting->getSetting('payment_bluesnap');
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			if(!empty($settingdata)){
-				if($this->request->post['bluesnap_mode']=='production'){
-					$this->request->post['bluesnap_production_username']=$this->request->post['bluesnap_username'];
-        				$this->request->post['bluesnap_production_password']=$this->request->post['bluesnap_password'];
-					$this->request->post['bluesnap_username']=$settingdata['bluesnap_username'];
-					$this->request->post['bluesnap_password']=$settingdata['bluesnap_password'];
+				if($this->request->post['payment_bluesnap_mode']=='production'){
+						$this->request->post['payment_bluesnap_production_username']=$this->request->post['payment_bluesnap_username'];
+						$this->request->post['payment_bluesnap_production_password']=$this->request->post['payment_bluesnap_password'];
+						$this->request->post['payment_bluesnap_username']=$settingdata['payment_bluesnap_username'];
+						$this->request->post['payment_bluesnap_password']=$settingdata['payment_bluesnap_password'];
 				}else{
-                                        $this->request->post['bluesnap_production_username']=$settingdata['bluesnap_production_username'];
-                                        $this->request->post['bluesnap_production_password']=$settingdata['bluesnap_production_password'];
+						$this->request->post['payment_bluesnap_production_username']=$settingdata['payment_bluesnap_production_username'];
+						$this->request->post['payment_bluesnap_production_password']=$settingdata['payment_bluesnap_production_password'];
 				}
 			}
 			$this->model_setting_setting->editSetting('payment_bluesnap', $this->request->post);
@@ -236,10 +236,10 @@ class ControllerExtensionPaymentBluesnap extends Controller {
 
 		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 
-		if (isset($this->request->post['bluesnap_geo_zone_id'])) {
-			$data['bluesnap_geo_zone_id'] = $this->request->post['bluesnap_geo_zone_id'];
+		if (isset($this->request->post['payment_bluesnap_geo_zone_id'])) {
+			$data['payment_bluesnap_geo_zone_id'] = $this->request->post['payment_bluesnap_geo_zone_id'];
 		} else {
-			$data['bluesnap_geo_zone_id'] = $this->config->get('bluesnap_geo_zone_id');
+			$data['payment_bluesnap_geo_zone_id'] = $this->config->get('payment_bluesnap_geo_zone_id');
 		}
 
 		$this->load->model('localisation/geo_zone');

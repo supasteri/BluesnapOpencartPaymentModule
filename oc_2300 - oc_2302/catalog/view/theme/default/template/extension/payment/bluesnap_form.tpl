@@ -214,7 +214,7 @@
                         $(this).removeClass( "hosted-field-focus hosted-field-invalid" ).addClass( "hosted-field-valid" ).next('span').text('');
                 }
                 checkForm(); 
-	)}.on("keyup", function() {
+	}).on("keyup", function() {
 		if ($(this).val().length == 0) {
 			$(this).removeClass( "hosted-field-focus hosted-field-valid" ).addClass( "hosted-field-invalid" ).next('span').text('<?php echo $error_lastname; ?>');
 							

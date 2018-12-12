@@ -88,9 +88,14 @@ final class Bluesnap {
 		$this->session = $registry->get('session');
 		$this->db = $registry->get('db');
 		$this->log = $registry->get('log');
-		$this->username = $this->config->get("bluesnap_username");
-		$this->password = $this->config->get("bluesnap_password");
 		$this->mode = $this->config->get("bluesnap_mode");
+		if($this->mode == "sandbox") {
+			$this->username = $this->config->get("bluesnap_username");
+			$this->password = $this->config->get("bluesnap_password");
+		} else {
+			$this->username = $this->config->get("bluesnap_production_username");
+			$this->password = $this->config->get("bluesnap_production_password");
+		}
 		$this->sandbox_mode_enabled = $this->mode == "sandbox" ? 1 : 0;
 		$this->debug_enabled = $this->config->get("bluesnap_debug_enabled");
 		$this->description_prefix = $this->config->get("bluesnap_description_prefix");
