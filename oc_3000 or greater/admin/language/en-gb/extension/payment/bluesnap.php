@@ -10,7 +10,7 @@ This payment module integrates the BlueSnap hosted payment fields functionality 
 
 <p>All the settings below can be found in the API Setting section of the bluesnap admin console.</p>
 ";
-$_['text_verification_success']			= 'Successfully authenticated with Bluesnap %S server: 
+$_['text_verification_success']			= 'Successfully authenticated with Bluesnap %s server: 
 
 ====
 * Sample Payment Field Token: %s 
