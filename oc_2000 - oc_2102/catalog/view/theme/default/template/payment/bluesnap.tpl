@@ -1,3 +1,17 @@
+<?php  if($new_theme && $new_theme == 'journal2') { ?>
+<style type="text/css">
+.journal-checkout #payment-confirm-button .buttons {
+	display: block !important;
+	cursor: pointer !important; 
+}
+.journal-checkout #payment-confirm-button .buttons .btn {
+    pointer-events: auto !important;
+}
+.confirm-section {
+	display: none;
+}
+</style>
+<?php } ?>
 <script>
 function loadScript(url, callback){
         console.log("Loading Script [" + url + "]");

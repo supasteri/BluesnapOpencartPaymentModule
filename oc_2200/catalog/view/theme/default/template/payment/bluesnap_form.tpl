@@ -74,7 +74,11 @@
           <span id="cardholder-lastname-help" class="helper-text"></span>
        </div>
     </div>  
+	<?php if(isset($new_theme) && $new_theme == 'journal2') { ?>
+			<button id="submit-button-bluesnap" data-loading-text="<?php echo $this->journal2->settings->get('one_page_lang_loading_text', 'Loading..'); ?>" class="button confirm-button" disabled="disabled"><?php echo $button_pay_now; ?></button> 
+	<?php }else{ ?>
     <button class="btn btn-success btn-lg col-xs-6 col-xs-offset-3" id="submit-button-bluesnap" disabled="disabled"><?php echo $button_pay_now;?></button>
+	<?php } ?>
   </form>
 <script type="text/javascript">
 	var ccnOk = false;

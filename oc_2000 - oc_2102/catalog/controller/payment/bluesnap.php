@@ -46,6 +46,11 @@ class ControllerPaymentBluesnap extends Controller {
                         $data['bluesnap_config_error'] = 1;
                         $data['bluesnap_config_error_message'] =  $this->language->get("bluesnap_config_error_message");
                 }
+				if($this->config->get('config_template') == 'journal2'){
+					$data['new_theme'] = $this->config->get('config_template');
+				}else{
+					$data['new_theme'] = "";
+				}
                 $data['continue'] = $this->url->link('checkout/success');
 
                 if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/bluesnap_form.tpl')) {
@@ -60,6 +65,11 @@ class ControllerPaymentBluesnap extends Controller {
 		$this->load->language('payment/bluesnap');
 		$data['button_confirm'] = $this->language->get('button_confirm_bluesnap');
 		$data['bluesnap_url'] = $this->bluesnap->get_url();
+		if($this->config->get('config_template') == 'journal2'){
+			$data['new_theme'] = $this->config->get('config_template');
+		}else{
+			$data['new_theme'] = "";
+		}
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/bluesnap.tpl')) {
 			return $this->load->view($this->config->get('config_template') . '/template/payment/bluesnap.tpl', $data);
 		} else {

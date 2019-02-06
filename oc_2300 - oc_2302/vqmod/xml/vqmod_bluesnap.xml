@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+    <id>VQMOD FOR Bluesnap- Do Not Remove</id>
+    <version>1.4.x and above</version>
+    <vqmver required="true">2.6.0</vqmver>
+    <author>panagos@gmail.com</author>
+
+	<file name="catalog/view/theme/journal2/template/journal2/checkout/checkout.tpl">
+        <operation>
+            <search position="after" index="2" error="log"><![CDATA[$(document).trigger('journal_checkout_reload_cart');]]></search>
+            <add><![CDATA[
+			if(value == 'bluesnap') {
+				$(".confirm-section").css({"display":"none"});
+			}else{
+				$(".confirm-section").css({"display":"block"});
+			}]]></add>
+        </operation>
+		<operation>
+            <search position="before" error="log"><![CDATA[window['journal_account_status'] = <?php echo (int)$is_logged_in; ?>;]]></search>
+            <add><![CDATA[
+			$(document).ready(function(){
+				if($("input[name=payment_method]:checked").val() == 'bluesnap') {
+					$(".confirm-section").css({"display":"none"});
+				}else{
+					$(".confirm-section").css({"display":"block"});
+				}
+			});]]></add>
+        </operation>
+	</file>
+
+</modification>

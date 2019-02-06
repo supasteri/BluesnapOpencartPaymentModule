@@ -1,3 +1,17 @@
+{% if new_theme and  new_theme == 'journal2' %}
+<style type="text/css">
+.journal-checkout #payment-confirm-button .buttons {
+	display: block !important;
+	cursor: allowed !important; 
+}
+.journal-checkout #payment-confirm-button .buttons .btn {
+    pointer-events: auto !important;
+}
+.confirm-section {
+	display: none;
+}
+</style>
+{% endif %}
 <script>
 function loadScript(url, callback){
         console.log("Loading Script [" + url + "]");
